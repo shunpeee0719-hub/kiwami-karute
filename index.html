@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>-極- カルテ | 美歴風カルテシステム</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="bk-header">
+  <div class="bk-header-left">
+    <div class="bk-logo">-極- カルテ</div>
+    <div class="bk-header-sub">美容カルテ / 予約・ブッチ / 写真管理</div>
+  </div>
+  <div class="bk-header-right">
+    <span class="bk-header-tag">BIREKI STYLE UI</span>
+  </div>
+</header>
+
+<div class="bk-shell">
+  <!-- 左カラム：顧客一覧 -->
+  <aside class="bk-sidebar">
+    <div class="bk-section-title">顧客一覧</div>
+    <div class="bk-search-row">
+      <input type="text" id="searchInput" class="bk-input" placeholder="名前・カナ・電話で検索">
+      <button class="bk-btn bk-btn-secondary" id="newCustomerBtn">新規</button>
+    </div>
+
+    <div class="bk-customer-list" id="customerList">
+      <!-- 顧客リストがここに描画される -->
+    </div>
+  </aside>
+
+  <!-- 右カラム：カルテ本体 -->
+  <main class="bk-main">
+    <!-- 顧客ヘッダー（美歴っぽい上部カード） -->
+    <section class="bk-card bk-patient-header">
+      <div class="bk-avatar-area">
+        <div class="bk-avatar-circle">
+          <span id="avatarInitial">？</span>
+        </div>
+      </div>
+      <div class="bk-patient-main">
+        <div class="bk-patient-name-row">
+          <h1 class="bk-patient-name" id="displayName">顧客を選択してください</h1>
+          <span class="bk-pill bk-pill-seg" id="displaySegment">-</span>
+          <span class="bk-pill bk-pill-flag" id="displayFlag" style="display:none;">要注意</span>
+        </div>
+        <div class="bk-patient-sub-row">
+          <span id="displayPhone">電話番号: -</span>
+          <span id="displayLastVisit"> / 最終来店: -</span>
+          <span id="displayCycle"> / サイクル: -</span>
+          <span id="displayNoShow" class="bk-no-show-pill" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="bk-patient-side">
+        <div class="bk-next-res-label">次回予約</div>
+        <div class="bk-next-res-date" id="displayNextReservation">未設定</div>
+      </div>
+    </section>
+
+    <!-- 顧客基本情報フォーム -->
+    <section class="bk-card">
+      <div class="bk-section-tabs">
+        <div class="bk-section-title">基本情報</div>
+      </div>
+
+      <form id="customerForm" class="bk-form">
+        <input type="hidden" id="customerId">
+        <div class="bk-form-grid">
+          <div class="bk-form-group">
+            <label>名前 <span class="bk-required">*</span></label>
+            <input type="text" id="name" class="bk-input" required>
+          </div>
+          <div class="bk-form-group">
+            <label>カナ</label>
+            <input type="text" id="kana" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>電話番号</label>
+            <input type="tel" id="phone" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>性別</label>
+            <select id="gender" class="bk-input">
+              <option value="">-</option>
+              <option value="男性">男性</option>
+              <option value="女性">女性</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div class="bk-form-group">
+            <label>生年月日</label>
+            <input type="date" id="birthday" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>担当スタイリスト</label>
+            <input type="text" id="stylist" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>区分</label>
+            <select id="segment" class="bk-input">
+              <option value="">-</option>
+              <option value="新規">新規</option>
+              <option value="リピート">リピート</option>
+              <option value="VIP">VIP</option>
+            </select>
+          </div>
+          <div class="bk-form-group">
+            <label>来店サイクル（日）</label>
+            <input type="number" id="cycleDays" class="bk-input" min="0">
+          </div>
+          <div class="bk-form-group">
+            <label>最終来店日</label>
+            <input type="date" id="lastVisit" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>次回予約日時</label>
+            <input type="datetime-local" id="nextReservation" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>累計ブッチ回数</label>
+            <input type="number" id="noShowCount" class="bk-input" min="0" value="0">
+          </div>
+          <div class="bk-form-group">
+            <label>要注意フラグ</label>
+            <select id="flag" class="bk-input">
+              <option value="">-</option>
+              <option value="要注意">要注意</option>
+              <option value="ブラック">ブラック</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bk-form-group">
+          <label>メモ</label>
+          <textarea id="memo" class="bk-textarea" rows="3"></textarea>
+        </div>
+
+        <div class="bk-form-actions">
+          <button type="submit" class="bk-btn bk-btn-primary">顧客情報を保存</button>
+          <button type="button" class="bk-btn bk-btn-ghost" id="resetCustomerBtn">クリア</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 来店履歴 -->
+    <section class="bk-card">
+      <div class="bk-section-tabs">
+        <div class="bk-section-title">来店履歴</div>
+      </div>
+
+      <form id="visitForm" class="bk-form bk-visit-form">
+        <input type="hidden" id="visitId">
+        <div class="bk-form-grid">
+          <div class="bk-form-group">
+            <label>来店日 <span class="bk-required">*</span></label>
+            <input type="date" id="visitDate" class="bk-input" required>
+          </div>
+          <div class="bk-form-group">
+            <label>メニュー</label>
+            <input type="text" id="menu" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>金額（税込）</label>
+            <input type="number" id="amount" class="bk-input" min="0">
+          </div>
+          <div class="bk-form-group">
+            <label>担当スタイリスト</label>
+            <input type="text" id="visitStylist" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>使用薬剤・レシピ</label>
+            <input type="text" id="recipe" class="bk-input">
+          </div>
+          <div class="bk-form-group">
+            <label>会話メモ</label>
+            <input type="text" id="talk" class="bk-input">
+          </div>
+        </div>
+
+        <div class="bk-form-group">
+          <label>施術メモ</label>
+          <textarea id="note" class="bk-textarea" rows="2"></textarea>
+        </div>
+
+        <div class="bk-form-group">
+          <label>施術写真（任意）</label>
+          <input type="file" id="photoInput" accept="image/*">
+        </div>
+
+        <div class="bk-form-actions">
+          <button type="submit" class="bk-btn bk-btn-primary">履歴を追加 / 更新</button>
+          <button type="button" class="bk-btn bk-btn-ghost" id="resetVisitBtn">入力クリア</button>
+        </div>
+      </form>
+
+      <div class="bk-visits-list-wrapper">
+        <table class="bk-visits-table" id="visitsTable">
+          <thead>
+            <tr>
+              <th>来店日</th>
+              <th>メニュー</th>
+              <th>金額</th>
+              <th>担当</th>
+              <th>写真</th>
+              <th>メモ</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="bk-status-bar">
+      <span id="statusMessage"></span>
+      <span id="errorMessage" class="bk-status-error"></span>
+    </div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
